@@ -19,11 +19,11 @@ class LevenshteinWordCheck:
     def get_suggested_words(self, word) -> list[WordWithDistance]:
         """Сортирует результаты по ключу сортировки,
         заданному при инициализации объекта класса.
-        Возвращает первые четыре слов с наименьшим расстоянием"""
+        Возвращает первые четыре слова с наименьшим расстоянием"""
 
         distance = self.get_distance(word)
         suggested_words = sorted(distance, key=self.sorting, reverse=True)
-        suggested_words = suggested_words[:4]
+        suggested_words = suggested_words[:3]
         for suggestion in suggested_words:
             suggestion.other = word
         return suggested_words

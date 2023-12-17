@@ -31,9 +31,29 @@ class SpellChecker:
                 print(f"Слово '{word}' не на русском или содержит цифры.")
                 continue
 
+            if self.check_extra_hyphens(tested_word):
+                print(f"Слово '{word}' содержит лишний дефис.")
+                continue
+
+            if self.check_consecutive_hyphens(tested_word):
+                print(f"Слово '{word}' содержит два дефиса подряд.")
+                continue
+
             corrections = self.checker.get_suggested_words(tested_word)
 
             self.write_correct_words(word, [correction for correction in corrections])
+
+    @staticmethod
+    def check_extra_hyphens(word):
+        """Проверяет, содержит ли слово лишний дефис между словами."""
+
+        return '-' in word and not word.startswith('-') and not word.endswith('-')
+
+    @staticmethod
+    def check_consecutive_hyphens(word):
+        """Проверяет, содержит ли слово два дефиса подряд."""
+
+        return '--' in word
 
     @staticmethod
     def write_correct_words(input_word, words_correction):
@@ -44,9 +64,13 @@ class SpellChecker:
 
         for word in words_correction:
             if isinstance(word, WordWithDistance):
-                suggestions.append(word.word)
+                if word.distance == 1.0:
+                    break
+                else:
+                    suggestions.append(word.word)
             elif word != input_word.lower():
                 suggestions.append(word)
 
         suggestions_list = ' / '.join(suggestions)
-        print("Введённый текст: {0:<50}".format(input_word), "Варианты коррекции:", suggestions_list)
+        if len(suggestions_list) > 0:
+            print("Введённый текст: {0:<30}".format(input_word), "Варианты коррекции:", suggestions_list)
