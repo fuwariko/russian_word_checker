@@ -15,10 +15,15 @@ class SpellChecker:
             text = file.read()
         return text
 
+    @staticmethod
+    def add_word_to_dictionary(word, filename):
+        with open(filename, 'a', encoding='utf-8') as file:
+            file.write(word + '\n')
+
     def read_input(self):
-        user_choice = input("Выберите способ ввода текста (1 - консоль, 2 - файл, чтобы выйти - введите 'стоп'): ")
+        user_choice = input("Выберите способ ввода текста (1 - консоль, 2 - файл): ")
         if user_choice == '1':
-            text = input("Введите текст: ")
+            text = input("Введите текст (введите 'cтоп' для выхода, 'добавить' - добавить слово в словарь): ")
         elif user_choice == '2':
             filename = input("Введите имя файла: ")
             text = self.read_file(filename)
@@ -32,8 +37,14 @@ class SpellChecker:
             text_input = self.read_input()
             if text_input is None:
                 continue
+            if text_input.lower() == 'добавить':
+                new_word = input("Введите слово для добавления: ")
+                filename = input("Введите имя файла, в который нужно добавить: ")
+                self.add_word_to_dictionary(new_word, filename)
+                continue
             if text_input.lower() == 'стоп':
                 break
+
             self.check_text(text_input)
 
     def check_text(self, text):
@@ -68,7 +79,6 @@ class SpellChecker:
                 corrections = self.checker.get_suggested_words(tested_word)
                 self.write_correct_words(tested_word, [correction for correction in corrections]
                                          + [' '.join(viterby_correction)])
-
 
     @staticmethod
     def check_consecutive_hyphens(word):
