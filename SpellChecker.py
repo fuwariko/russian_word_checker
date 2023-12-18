@@ -9,9 +9,29 @@ class SpellChecker:
     def __init__(self):
         self.checker = LevenshteinWordCheck(key=lambda item: item.distance)
 
+    @staticmethod
+    def read_file(filename):
+        with open(filename, 'r', encoding='utf-8') as file:
+            text = file.read()
+        return text
+
+    def read_input(self):
+        user_choice = input("Выберите способ ввода текста (1 - консоль, 2 - файл, чтобы выйти - введите 'стоп'): ")
+        if user_choice == '1':
+            text = input("Введите текст: ")
+        elif user_choice == '2':
+            filename = input("Введите имя файла: ")
+            text = self.read_file(filename)
+        else:
+            print("Некорректный выбор.")
+            return None
+        return text
+
     def run_console(self):
         while True:
-            text_input = input("Напишите что-нибудь (введите 'стоп' для выхода): ")
+            text_input = self.read_input()
+            if text_input is None:
+                continue
             if text_input.lower() == 'стоп':
                 break
             self.check_text(text_input)
