@@ -41,8 +41,6 @@ class SpellChecker:
                 second_part = tested_word.split("-")[1]
                 corrections1 = self.checker.get_suggested_words(first_part)
                 corrections2 = self.checker.get_suggested_words(second_part)
-                print(corrections1)
-                print(corrections2)
                 self.write_correct_words(tested_word, [correction for correction in corrections1])
                 self.write_correct_words(tested_word, [correction for correction in corrections2])
             else:
