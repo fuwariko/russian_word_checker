@@ -2,6 +2,7 @@ import hashlib
 from Levenshtein_algorithm import get_levenshtein_distance
 from WordWithDistance import WordWithDistance
 from concurrent.futures import ThreadPoolExecutor
+from collections import Counter
 
 
 class LevenshteinWordCheck:
@@ -15,11 +16,14 @@ class LevenshteinWordCheck:
         with open('dictionary.txt', 'r', encoding='utf-8') as data_file:
             words = data_file.read().split('\n')
             self.data = [WordWithDistance(word) for word in words]
+            self.max_len = max(len(word_with_d.word) for word_with_d in self.data)
+            self.counter = Counter(words.word for words in self.data)
+            self.total = float(sum(self.counter.values()))
 
     def get_suggested_words(self, word) -> list[WordWithDistance]:
         """Сортирует результаты по ключу сортировки,
         заданному при инициализации объекта класса.
-        Возвращает первые четыре слова с наименьшим расстоянием"""
+        Возвращает первые три слова с наименьшим расстоянием"""
 
         distance = self.get_distance(word)
         suggested_words = sorted(distance, key=self.sorting, reverse=True)
