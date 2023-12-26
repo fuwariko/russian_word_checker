@@ -3,6 +3,7 @@ from Levenshtein_algorithm import get_levenshtein_distance
 from WordWithDistance import WordWithDistance
 from concurrent.futures import ThreadPoolExecutor
 from collections import Counter
+import os
 
 
 class LevenshteinWordCheck:
@@ -10,10 +11,11 @@ class LevenshteinWordCheck:
         """Загружает словарь.
         Создает список объектов класса WordWithDistance,
         где объект - слово из словаря и расстояние Левенштейна до введенного слова."""
-
         self.sorting = key
         self.cache = {}
-        with open('dictionary.txt', 'r', encoding='utf-8') as data_file:
+        a = os.getcwd()
+        a = os.path.dirname(a)
+        with open('test_files\\dictionary.txt', 'r', encoding='utf-8') as data_file:
             words = data_file.read().split('\n')
             self.data = [WordWithDistance(word) for word in words]
             self.max_len = max(len(word_with_d.word) for word_with_d in self.data)

@@ -10,9 +10,9 @@ def build_vocab(corpus):
     tokens = text.lower().split()
     tokens = [token.strip(string.punctuation) for token in tokens if token.strip(string.punctuation)]
     unique_words = set(tokens)
-    with open('new_dictionary.txt', 'a', encoding='utf-8') as file:
+    with open('test_files/new_dictionary.txt', 'a', encoding='utf-8') as file:
         for word in unique_words:
             file.write(f"{word}\n")
 
 
-build_vocab('text.txt')
+build_vocab('test_files/text.txt')
