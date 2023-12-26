@@ -3,7 +3,6 @@ from words_check_by_levenshtein import LevenshteinWordCheck
 import re
 from WordWithDistance import WordWithDistance
 from ViterbiAlgorithm import viterbi_segment
-import json
 
 
 class SpellChecker:
@@ -24,20 +23,21 @@ class SpellChecker:
     @staticmethod
     def save_rules(rules, filename):
         with open(filename, 'a', encoding='utf-8') as file:
-            json.dump(rules, file, ensure_ascii=False, indent=4)
+            for incorrect_word, correct_word in rules.items():
+                file.write(f"{incorrect_word}:{correct_word}\n")
 
     @staticmethod
     def load_rules(filename):
-        try:
-            with open(filename, 'r', encoding='utf-8') as file:
-                rules = json.load(file)
-            return rules
-        except FileNotFoundError:
-            print(f"Файл {filename} не найден.")
-            return {}
-        except json.decoder.JSONDecodeError:
-            print(f"Файл {filename} пуст или содержит некорректный JSON.")
-            return {}
+        rules = {}
+
+        with open(filename, 'r', encoding='utf-8') as file:
+            for line in file:
+                line = line.strip()
+                if line:
+                    incorrect_word, correct_word = line.split(':')
+                    rules[incorrect_word] = correct_word
+
+        return rules
 
     def read_input(self):
         user_choice = input("Выберите способ ввода текста (1 - консоль, 2 - файл): ")
@@ -132,7 +132,7 @@ class SpellChecker:
 
         for word in words_correction:
             if isinstance(word, WordWithDistance):
-                if word.distance == 1.0:
+                if word.distance == 1.0 or input_word.isdigit():
                     break
                 else:
                     suggestions.append(word.word)
