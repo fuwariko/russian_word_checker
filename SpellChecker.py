@@ -3,6 +3,8 @@ from words_check_by_levenshtein import LevenshteinWordCheck
 import re
 from WordWithDistance import WordWithDistance
 from ViterbiAlgorithm import viterbi_segment
+from RulesMaker import save_rules
+from RulesMaker import load_rules
 
 
 class SpellChecker:
@@ -19,25 +21,6 @@ class SpellChecker:
     def add_word_to_dictionary(word, filename):
         with open(filename, 'a', encoding='utf-8') as file:
             file.write(word + '\n')
-
-    @staticmethod
-    def save_rules(rules, filename):
-        with open(filename, 'a', encoding='utf-8') as file:
-            for incorrect_word, correct_word in rules.items():
-                file.write(f"{incorrect_word}:{correct_word}\n")
-
-    @staticmethod
-    def load_rules(filename):
-        rules = {}
-
-        with open(filename, 'r', encoding='utf-8') as file:
-            for line in file:
-                line = line.strip()
-                if line:
-                    incorrect_word, correct_word = line.split(':')
-                    rules[incorrect_word] = correct_word
-
-        return rules
 
     def read_input(self):
         user_choice = input("Выберите способ ввода текста (1 - консоль, 2 - файл): ")
@@ -70,7 +53,7 @@ class SpellChecker:
                 correct_word = rule_parts[1]
                 filename = input("Введите имя файла, в который нужно добавить правило: ")
                 rule = {incorrect_word: correct_word}
-                self.save_rules(rule, filename)
+                save_rules(rule, filename)
                 continue
             if text_input.lower() == 'стоп':
                 break
@@ -82,7 +65,7 @@ class SpellChecker:
         Разбивает текст на слова, удаляет пунктуацию, приводит все к нижнему регистру.
         Проверяет на каком языке слово.
         Проверяет слова и выводит список исправлений."""
-        rules = self.load_rules('test_files\\rules.txt')
+        rules = load_rules('test_files\\rules.txt')
 
         splitted_text = [word for word in re.split(r'[ ,.!?]', text) if word.strip() != '']
 
@@ -142,4 +125,3 @@ class SpellChecker:
         suggestions_list = ' / '.join(suggestions)
         if len(suggestions_list) > 0:
             print("Введённый текст: {0:<30}".format(input_word), "Варианты коррекции:", suggestions_list)
-
